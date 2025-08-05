@@ -1,25 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-const Game2048 = () => {
-  const [board, setBoard] = useState(() => initializeBoard());
-  const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return parseInt(localStorage.getItem('2048-best') || '0');
-    }
-    return 0;
-  });
-  const [gameOver, setGameOver] = useState(false);
-  const [won, setWon] = useState(false);
+type Board = number[][];
 
-  function initializeBoard() {
-    const newBoard = Array(4).fill(null).map(() => Array(4).fill(0));
+const Game2048 = () => {
+  const [board, setBoard] = useState<Board>(() => initializeBoard());
+  const [score, setScore] = useState<number>(0);
+  const [bestScore, setBestScore] = useState<number>(0);
+  const [gameOver, setGameOver] = useState<boolean>(false);
+  const [won, setWon] = useState<boolean>(false);
+
+  function initializeBoard(): Board {
+    const newBoard: Board = Array(4).fill(null).map(() => Array(4).fill(0));
     addRandomTile(newBoard);
     addRandomTile(newBoard);
     return newBoard;
   }
 
-  function addRandomTile(board) {
+  function addRandomTile(board: Board): void {
     const emptyCells = [];
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
@@ -34,10 +31,11 @@ const Game2048 = () => {
     }
   }
 
-  const moveLeft = useCallback((board) => {
-    let newBoard = board.map(row => [...row]);
+  const moveLeft = useCallback((board: Board, currentWon: boolean) => {
+    let newBoard: Board = board.map(row => [...row]);
     let scoreIncrease = 0;
     let moved = false;
+    let hasWon = currentWon;
 
     for (let i = 0; i < 4; i++) {
       const row = newBoard[i].filter(cell => cell !== 0);
@@ -46,8 +44,8 @@ const Game2048 = () => {
           row[j] *= 2;
           scoreIncrease += row[j];
           row[j + 1] = 0;
-          if (row[j] === 2048 && !won) {
-            setWon(true);
+          if (row[j] === 2048 && !hasWon) {
+            hasWon = true;
           }
         }
       }
@@ -61,17 +59,16 @@ const Game2048 = () => {
       }
       newBoard[i] = newRow;
     }
+    return { board: newBoard, score: scoreIncrease, moved, won: hasWon };
+  }, []);
 
-    return { board: newBoard, score: scoreIncrease, moved };
-  }, [won]);
-
-  const rotateBoard = useCallback((board) => {
+  const rotateBoard = useCallback((board: Board): Board => {
     return board[0].map((_, colIndex) => 
       board.map(row => row[colIndex]).reverse()
     );
   }, []);
 
-  const move = useCallback((direction) => {
+  const move = useCallback((direction: string) => {
     if (gameOver) return;
 
     let newBoard = board.map(row => [...row]);
@@ -98,7 +95,7 @@ const Game2048 = () => {
     }
 
     // Move left
-    const { board: movedBoard, score: scoreIncrease, moved } = moveLeft(newBoard);
+    const { board: movedBoard, score: scoreIncrease, moved, won: hasWon } = moveLeft(newBoard, won);
 
     // Rotate back
     let finalBoard = movedBoard;
@@ -114,9 +111,10 @@ const Game2048 = () => {
       
       if (newScore > bestScore) {
         setBestScore(newScore);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('2048-best', newScore.toString());
-        }
+      }
+
+      if (hasWon && !won) {
+        setWon(true);
       }
 
       // Check for game over
@@ -124,7 +122,7 @@ const Game2048 = () => {
         setGameOver(true);
       }
     }
-  }, [board, score, bestScore, gameOver, moveLeft, rotateBoard]);
+  }, [board, score, bestScore, gameOver, won, moveLeft, rotateBoard]);
 
   const isGameOver = (board) => {
     // Check for empty cells
@@ -146,7 +144,6 @@ const Game2048 = () => {
         }
       }
     }
-
     return true;
   };
 
