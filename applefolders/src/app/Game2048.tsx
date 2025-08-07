@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 type Board = number[][];
 
-const Game2048 = () => {
+const Game2048: React.FC = () => {
   const [board, setBoard] = useState<Board>(() => initializeBoard());
   const [score, setScore] = useState<number>(0);
   const [bestScore, setBestScore] = useState<number>(0);
@@ -125,7 +125,6 @@ const Game2048 = () => {
   }, [board, score, bestScore, gameOver, won, moveLeft, rotateBoard]);
 
   const isGameOver = (board: Board): boolean => {
-
     // Check for empty cells
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
@@ -157,7 +156,6 @@ const Game2048 = () => {
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
         event.preventDefault();
         move(event.key);
@@ -183,43 +181,38 @@ const Game2048 = () => {
       1024: '#edc53f',
       2048: '#edc22e',
     };
-    return colors[value] || '#3c3a32'; // default for values not listed
+    return colors[value] || '#3c3a32';
   };
   
-
   const getTileTextColor = (value: number): string => {
-
     return value <= 4 ? '#776e65' : '#f9f6f2';
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">2048</h1>
-          <p className="text-gray-600 text-sm">Join numbers to reach 2048!</p>
+    <div className="flex flex-col items-center justify-center min-h-full bg-gradient-to-br from-amber-50 to-orange-50 p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full">
+        <div className="text-center mb-4">
+          <h1 className="text-3xl font-bold text-gray-800 mb-1">2048</h1>
+          <p className="text-gray-600 text-xs">Join numbers to reach 2048!</p>
         </div>
 
-        {/* Score Section */}
-        <div className="flex justify-between mb-6">
-          <div className="bg-gray-100 rounded-lg px-4 py-3 text-center flex-1 mr-2">
+        <div className="flex justify-between mb-4">
+          <div className="bg-gray-100 rounded-lg px-3 py-2 text-center flex-1 mr-1">
             <div className="text-gray-600 text-xs uppercase tracking-wide">Score</div>
-            <div className="text-xl font-bold text-gray-800">{score}</div>
+            <div className="text-lg font-bold text-gray-800">{score}</div>
           </div>
-          <div className="bg-gray-100 rounded-lg px-4 py-3 text-center flex-1 ml-2">
+          <div className="bg-gray-100 rounded-lg px-3 py-2 text-center flex-1 ml-1">
             <div className="text-gray-600 text-xs uppercase tracking-wide">Best</div>
-            <div className="text-xl font-bold text-gray-800">{bestScore}</div>
+            <div className="text-lg font-bold text-gray-800">{bestScore}</div>
           </div>
         </div>
 
-        {/* Game Board */}
-        <div className="bg-gray-300 rounded-lg p-3 mb-6">
-          <div className="grid grid-cols-4 gap-3">
+        <div className="bg-gray-300 rounded-lg p-2 mb-4">
+          <div className="grid grid-cols-4 gap-2">
             {board.flat().map((value, index) => (
               <div
                 key={index}
-                className="w-16 h-16 rounded-md flex items-center justify-center text-lg font-bold transition-all duration-150"
+                className="w-12 h-12 rounded-md flex items-center justify-center text-sm font-bold transition-all duration-150"
                 style={{
                   backgroundColor: getTileColor(value),
                   color: getTileTextColor(value),
@@ -231,61 +224,57 @@ const Game2048 = () => {
           </div>
         </div>
 
-        {/* Game Status Messages */}
         {won && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-center">
-            🎉 You won! Keep going for a higher score!
+          <div className="bg-green-100 border border-green-400 text-green-700 px-3 py-2 rounded mb-3 text-center text-xs">
+            🎉 You won! Keep going!
           </div>
         )}
 
         {gameOver && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-center">
-            Game Over! No more moves available.
+          <div className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded mb-3 text-center text-xs">
+            Game Over! No more moves.
           </div>
         )}
 
-        {/* Controls */}
         <div className="text-center">
           <button
             onClick={resetGame}
-            className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 mb-4"
+            className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 mb-3 text-sm"
           >
             New Game
           </button>
           
-          <div className="text-gray-600 text-sm">
+          <div className="text-gray-600 text-xs">
             <p>Use arrow keys to move tiles</p>
-            <p className="mt-1">Tiles with the same number merge into one!</p>
           </div>
         </div>
 
-        {/* Mobile Controls */}
-        <div className="grid grid-cols-3 gap-2 mt-6 max-w-48 mx-auto md:hidden">
+        <div className="grid grid-cols-3 gap-1 mt-4 max-w-32 mx-auto">
           <div></div>
           <button
             onClick={() => move('ArrowUp')}
-            className="bg-gray-200 hover:bg-gray-300 rounded-lg p-3 transition-colors"
+            className="bg-gray-200 hover:bg-gray-300 rounded p-2 transition-colors text-xs"
           >
             ↑
           </button>
           <div></div>
           <button
             onClick={() => move('ArrowLeft')}
-            className="bg-gray-200 hover:bg-gray-300 rounded-lg p-3 transition-colors"
+            className="bg-gray-200 hover:bg-gray-300 rounded p-2 transition-colors text-xs"
           >
             ←
           </button>
           <div></div>
           <button
             onClick={() => move('ArrowRight')}
-            className="bg-gray-200 hover:bg-gray-300 rounded-lg p-3 transition-colors"
+            className="bg-gray-200 hover:bg-gray-300 rounded p-2 transition-colors text-xs"
           >
             →
           </button>
           <div></div>
           <button
             onClick={() => move('ArrowDown')}
-            className="bg-gray-200 hover:bg-gray-300 rounded-lg p-3 transition-colors"
+            className="bg-gray-200 hover:bg-gray-300 rounded p-2 transition-colors text-xs"
           >
             ↓
           </button>
