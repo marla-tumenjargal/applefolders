@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Dock from './dock';
 import Header from './header';
-import Game2048 from './game2048'; // Import the separate Game2048 component
+import Game2048 from './Game2048'; // Import the separate Game2048 component
 
 export default function Page() {
   const [isLoaded, setIsLoaded] = useState(false);
