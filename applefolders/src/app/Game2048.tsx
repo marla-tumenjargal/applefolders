@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 type Board = number[][];
 
-const Game2048: React.FC = () => {
+const game2048: React.FC = () => {
   const [board, setBoard] = useState<Board>(() => initializeBoard());
   const [score, setScore] = useState<number>(0);
   const [bestScore, setBestScore] = useState<number>(0);
@@ -285,4 +285,4 @@ const Game2048: React.FC = () => {
   );
 };
 
-export default Game2048;
+export default game2048;
