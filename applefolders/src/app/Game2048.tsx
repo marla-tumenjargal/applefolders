@@ -124,7 +124,8 @@ const Game2048 = () => {
     }
   }, [board, score, bestScore, gameOver, won, moveLeft, rotateBoard]);
 
-  const isGameOver = (board) => {
+  const isGameOver = (board: Board): boolean => {
+
     // Check for empty cells
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
