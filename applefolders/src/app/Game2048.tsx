@@ -156,7 +156,8 @@ const Game2048 = () => {
   };
 
   useEffect(() => {
-    const handleKeyPress = (event) => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
         event.preventDefault();
         move(event.key);
@@ -167,8 +168,8 @@ const Game2048 = () => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [move]);
 
-  const getTileColor = (value) => {
-    const colors = {
+  const getTileColor = (value: number): string => {
+    const colors: { [key: number]: string } = {
       0: 'transparent',
       2: '#eee4da',
       4: '#ede0c8',
@@ -182,10 +183,12 @@ const Game2048 = () => {
       1024: '#edc53f',
       2048: '#edc22e',
     };
-    return colors[value] || '#3c3a32';
+    return colors[value] || '#3c3a32'; // default for values not listed
   };
+  
 
-  const getTileTextColor = (value) => {
+  const getTileTextColor = (value: number): string => {
+
     return value <= 4 ? '#776e65' : '#f9f6f2';
   };
 
